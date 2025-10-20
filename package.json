@@ -17,7 +17,7 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "vercel-build": "npm install && npm run db:migrate && npm run build"
+    "vercel-build": "npm run db:migrate && npm run build"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
