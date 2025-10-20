@@ -8,8 +8,16 @@ export default async function Home() {
 
 	void api.post.getLatest.prefetch();
 
+	const list = await api.post.getList();
+
 	return (
 		<HydrateClient>
+			{list.map((v) => (
+				<div key={v.id}>
+					{v.name} | {v.createdAt.toLocaleString()} |{" "}
+					{v.updatedAt.toLocaleString()}
+				</div>
+			))}
 			<LatestPost />
 			{hello.greeting}
 		</HydrateClient>
