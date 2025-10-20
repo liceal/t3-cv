@@ -15,6 +15,7 @@ model Post {
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    des       String?  @default("") 
 
     @@index([name])
 }
