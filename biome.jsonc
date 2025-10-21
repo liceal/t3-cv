@@ -30,6 +30,12 @@
         "noDangerouslySetInnerHtml": {
           "level": "off"
         }
+      },
+      "correctness": {
+        "useExhaustiveDependencies": {
+          "options": {},
+          "level": "off"
+        }
       }
     }
   }

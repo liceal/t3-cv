@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import puppeteer from "puppeteer";
 
 export const postRouter = createTRPCRouter({
 	hello: publicProcedure
@@ -34,4 +35,29 @@ export const postRouter = createTRPCRouter({
 		});
 		return postList ?? null;
 	}),
+	generatePdf: publicProcedure
+		.input(z.object({ cvHTML: z.string() }))
+		.mutation(async ({ input }) => {
+			// 使用Puppeteer生成PDF
+			const browser = await puppeteer.launch({
+				headless: true,
+				args: ["--no-sandbox", "--disable-setuid-sandbox"], // Docker/Server需添加
+			});
+			const page = await browser.newPage();
+
+			// 设置HTML内容
+			await page.setContent(input.cvHTML, {
+				waitUntil: "networkidle0", // 等待所有资源加载
+			});
+
+			// 生成PDF
+			const pdf = await page.pdf({
+				format: "A4",
+				printBackground: true, // 打印背景
+				margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
+			});
+
+			await browser.close();
+			return { pdf };
+		}),
 });
