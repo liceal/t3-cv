@@ -6,7 +6,7 @@ import { Geist } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
-	title: "licael的CV",
+	title: "简历",
 	description: "hello world~",
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };

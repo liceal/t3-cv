@@ -17,25 +17,24 @@ export default function CV() {
 		gfm: true, // 支持 GitHub Flavored Markdown
 	});
 
-	// 读取静态资源文本内容
-	fetch(
-		// "/CV.md",
-		"https://raw.githubusercontent.com/liceal/cv/refs/heads/master/src/static/CV.md",
-		{
-			method: "get",
-		},
-	)
-		.then((res) => res.text())
-		.then(async (data) => {
-			const cvHTML = await marked(data);
-			// console.log(cvHTML);
-			setCVHTML(cvHTML);
-			// console.log('data:', data);
-		});
-
 	useEffect(() => {
+		// 读取静态资源文本内容
+		fetch(
+			// "/CV.md",
+			"https://raw.githubusercontent.com/liceal/t3-cv/refs/heads/main/public/cv.md",
+			{
+				method: "get",
+			},
+		)
+			.then((res) => res.text())
+			.then(async (data) => {
+				const cvHTML = await marked(data);
+				// console.log(cvHTML);
+				setPurifyCvHtml(DOMPurify.sanitize(cvHTML));
+
+				// console.log('data:', data);
+			});
 		// 用useEffect避免ssr渲染 对于DOMPurify.sanitize
-		setPurifyCvHtml(DOMPurify.sanitize(cvHTML));
 	}, [cvHTML]);
 
 	useEffect(() => {
