@@ -42,7 +42,10 @@ export default async function Home() {
 	function Footer() {
 		return (
 			<div className="text-center text-[0.8em] leading-4 ">
-				<p>@liceal | © 2020</p>
+				<p>
+					@liceal | © 2020 |{" "}
+					<a href="https://github.com/liceal/t3-cv">Github</a>
+				</p>
 			</div>
 		);
 	}
