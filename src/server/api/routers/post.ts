@@ -44,9 +44,9 @@ export const postRouter = createTRPCRouter({
 				args: [
 					"--no-sandbox",
 					"--disable-setuid-sandbox",
-					"--disable-dev-shm-usage", // 禁止使用共享内存
-					"--no-zygote", // 关闭子进程孵化
-					"--max-old-space-size=512", // Node.js内存限制(MB)
+					// "--disable-dev-shm-usage", // 禁止使用共享内存
+					// "--no-zygote", // 关闭子进程孵化
+					// "--max-old-space-size=512", // Node.js内存限制(MB)
 				], // Docker/Server需添加
 			};
 			if (process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD) {
@@ -63,9 +63,12 @@ export const postRouter = createTRPCRouter({
 					<html>
 						<head>
 							<meta charset="UTF-8">
-							<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkaibright/dist/LXGWBright-Medium/result.css' />
+							<link
+								rel="stylesheet"
+								href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css"
+							/>
 							<style>
-								body {font-family:'LXGW Bright Medium';font-weight:'400'};
+								body {font-family:'Maple Mono CN SemiBold';font-weight:'400'};
 							</style>
 						</head>
 						<body>
