@@ -41,7 +41,13 @@ export const postRouter = createTRPCRouter({
 			// 使用Puppeteer生成PDF
 			const browser = await puppeteer.launch({
 				headless: true,
-				args: ["--no-sandbox", "--disable-setuid-sandbox"], // Docker/Server需添加
+				args: [
+					"--no-sandbox",
+					"--disable-setuid-sandbox",
+					"--disable-dev-shm-usage", // 禁止使用共享内存
+					"--no-zygote", // 关闭子进程孵化
+					"--max-old-space-size=512", // Node.js内存限制(MB)
+				], // Docker/Server需添加
 			});
 			const page = await browser.newPage();
 

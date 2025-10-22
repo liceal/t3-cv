@@ -8,7 +8,6 @@ import { api } from "@/trpc/react";
 
 export default function CV() {
 	const [cvHTML, setCVHTML] = useState("");
-	const [purifyCvHtml, setPurifyCvHtml] = useState("");
 	const [topShow, setTopShow] = useState(false);
 
 	// 配置 marked（可选）
@@ -30,12 +29,12 @@ export default function CV() {
 			.then(async (data) => {
 				const cvHTML = await marked(data);
 				// console.log(cvHTML);
-				setPurifyCvHtml(DOMPurify.sanitize(cvHTML));
+				setCVHTML(DOMPurify.sanitize(cvHTML));
 
 				// console.log('data:', data);
 			});
 		// 用useEffect避免ssr渲染 对于DOMPurify.sanitize
-	}, [cvHTML]);
+	}, []);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -110,7 +109,7 @@ export default function CV() {
 			<div
 				id="cv"
 				className="page"
-				dangerouslySetInnerHTML={{ __html: purifyCvHtml }}
+				dangerouslySetInnerHTML={{ __html: cvHTML }}
 			/>
 			<FixedButton key="fixed-button" showTop={topShow} />
 		</div>
