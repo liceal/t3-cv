@@ -21,6 +21,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="en" className={`${geist.variable}`}>
+			<link
+				rel="stylesheet"
+				href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css"
+			/>
 			<body>
 				<TRPCReactProvider>{children}</TRPCReactProvider>
 			</body>

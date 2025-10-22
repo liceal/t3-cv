@@ -33,7 +33,6 @@ export default function CV() {
 
 				// console.log('data:', data);
 			});
-		// 用useEffect避免ssr渲染 对于DOMPurify.sanitize
 	}, []);
 
 	useEffect(() => {
@@ -67,6 +66,7 @@ export default function CV() {
 					a.download = "cv.pdf";
 					a.click();
 					window.URL.revokeObjectURL(url); // 释放内存
+					alert("pdf下载完成");
 				},
 				onError: (error) => {
 					console.error("生成PDF失败:", error);

@@ -52,9 +52,25 @@ export const postRouter = createTRPCRouter({
 			const page = await browser.newPage();
 
 			// 设置HTML内容
-			await page.setContent(input.cvHTML, {
-				waitUntil: "networkidle0", // 等待所有资源加载
-			});
+			await page.setContent(
+				`
+					<html>
+						<head>
+							<meta charset="UTF-8">
+							<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkaibright/dist/LXGWBright-Medium/result.css' />
+							<style>
+								body {font-family:'LXGW Bright Medium';font-weight:'400'};
+							</style>
+						</head>
+						<body>
+							${input.cvHTML}
+						</body>
+					</html>
+				`,
+				{
+					waitUntil: "networkidle0", // 等待所有网络请求完成（包括字体加载）
+				},
+			);
 
 			// 生成PDF
 			const pdf = await page.pdf({
