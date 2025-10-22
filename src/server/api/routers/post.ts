@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import puppeteer from "puppeteer";
+import puppeteer, { type LaunchOptions } from "puppeteer";
 
 export const postRouter = createTRPCRouter({
 	hello: publicProcedure
@@ -39,7 +39,7 @@ export const postRouter = createTRPCRouter({
 		.input(z.object({ cvHTML: z.string() }))
 		.mutation(async ({ input }) => {
 			// 使用Puppeteer生成PDF
-			const browser = await puppeteer.launch({
+			const puppeteerConfig: LaunchOptions = {
 				headless: true,
 				args: [
 					"--no-sandbox",
@@ -48,7 +48,13 @@ export const postRouter = createTRPCRouter({
 					"--no-zygote", // 关闭子进程孵化
 					"--max-old-space-size=512", // Node.js内存限制(MB)
 				], // Docker/Server需添加
-			});
+			};
+			if (process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD) {
+				puppeteerConfig.executablePath = process.env.CHROME_PATH;
+			} else {
+				puppeteerConfig.headless = true;
+			}
+			const browser = await puppeteer.launch(puppeteerConfig);
 			const page = await browser.newPage();
 
 			// 设置HTML内容
