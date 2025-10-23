@@ -52,7 +52,6 @@ export const postRouter = createTRPCRouter({
 			if (process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD) {
 				puppeteerConfig.executablePath =
 					process.env.CHROME_PATH || (await chromium.executablePath());
-				console.log(11, puppeteerConfig.executablePath);
 			} else {
 				puppeteerConfig.headless = true;
 			}
