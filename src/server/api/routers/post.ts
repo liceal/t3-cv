@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import puppeteer, { type LaunchOptions } from "puppeteer";
+import chromium from "@sparticuz/chromium";
 
 export const postRouter = createTRPCRouter({
 	hello: publicProcedure
@@ -40,7 +41,6 @@ export const postRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			// 使用Puppeteer生成PDF
 			const puppeteerConfig: LaunchOptions = {
-				headless: true,
 				args: [
 					"--no-sandbox",
 					"--disable-setuid-sandbox",
@@ -50,7 +50,9 @@ export const postRouter = createTRPCRouter({
 				], // Docker/Server需添加
 			};
 			if (process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD) {
-				puppeteerConfig.executablePath = process.env.CHROME_PATH;
+				puppeteerConfig.executablePath =
+					process.env.CHROME_PATH || (await chromium.executablePath());
+				console.log(11, puppeteerConfig.executablePath);
 			} else {
 				puppeteerConfig.headless = true;
 			}
