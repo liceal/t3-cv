@@ -80,8 +80,26 @@ export const postRouter = createTRPCRouter({
 				`,
 				{
 					waitUntil: "networkidle0", // 等待所有网络请求完成（包括字体加载）
+					timeout: 30000, // 增加超时时间到30秒
 				},
 			);
+
+			// 额外等待字体加载（如果网络较慢）
+			await page.evaluate(async () => {
+				const font = new FontFace(
+					"Maple Mono CN SemiBold",
+					'url("https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css")',
+				);
+				await font.load();
+				document.fonts.add(font);
+			});
+
+			// 确保所有内容已渲染
+			await page.waitForFunction(() => {
+				return document.fonts.ready.then(() => {
+					return document.body.textContent !== "";
+				});
+			});
 
 			// 生成PDF
 			const pdf = await page.pdf({
