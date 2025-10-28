@@ -69,7 +69,14 @@ export const postRouter = createTRPCRouter({
 								href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css"
 							/>
 							<style>
-								body {font-family:'Maple Mono CN SemiBold';font-weight:'400'};
+								body {
+									font-family: 
+										'Maple Mono CN SemiBold', /* 首选 */
+										'Noto Sans Mono CJK SC',  /* Debian 等宽回退 */
+										'Courier New',            /* Windows/Linux 通用等宽 */
+										monospace;                /* 终极回退 */
+									font-weight: 400;
+								}
 							</style>
 						</head>
 						<body>
