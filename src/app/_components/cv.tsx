@@ -5,6 +5,7 @@ import "@/styles/cv.scss";
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import { api } from "@/trpc/react";
+import axios from "axios";
 
 export default function CV() {
 	const [cvHTML, setCVHTML] = useState("");
@@ -18,21 +19,16 @@ export default function CV() {
 
 	useEffect(() => {
 		// 读取静态资源文本内容
-		fetch(
-			// "/CV.md",
-			"https://raw.githubusercontent.com/liceal/t3-cv/refs/heads/main/public/cv.md",
-			{
-				method: "get",
-			},
-		)
-			.then((res) => res.text())
-			.then(async (data) => {
-				const cvHTML = await marked(data);
-				// console.log(cvHTML);
-				setCVHTML(DOMPurify.sanitize(cvHTML));
-
-				// console.log('data:', data);
-			});
+		axios({
+			method: "get",
+			url:
+				process.env.NODE_ENV === "development"
+					? "./cv.md"
+					: "https://raw.githubusercontent.com/liceal/t3-cv/refs/heads/main/public/cv.md",
+		}).then(async (res) => {
+			const cvHTML = await marked(res.data);
+			setCVHTML(DOMPurify.sanitize(cvHTML));
+		});
 	}, []);
 
 	useEffect(() => {
@@ -78,12 +74,20 @@ export default function CV() {
 				className={`fixed-button iconfont icon-xiazai download ${isGenerating && "loading-dots"}`}
 				title="下载PDF简历"
 				onClick={() => {
-					if (!isGenerating) {
-						generatePdf({ cvHTML });
+					if (process.env.NEXT_PUBLIC_PDF_LOCAL === "true") {
+						if (!isGenerating) {
+							generatePdf({ cvHTML });
+						}
+					} else {
+						if (process.env.NODE_ENV === "development") {
+							window.open("./cv.pdf", "_blank");
+						} else {
+							window.open(
+								"https://raw.githubusercontent.com/liceal/t3-cv/refs/heads/main/public/cv.pdf",
+								"_blank",
+							);
+						}
 					}
-					// window.open(
-					// 	"https://github.com/liceal/cv/raw/master/src/static/cv.pdf",
-					// );
 				}}
 			/>,
 			props.showTop && (

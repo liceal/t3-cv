@@ -18,3 +18,24 @@ hr,
 p {
   all: revert;
 }
+
+/* 额外的 li 恢复（防止 tailwind 默认清除） */
+ul,
+ol {
+  /* 恢复外边距和内边距，确保列表内容不紧贴 */
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  padding-inline-start: 40px;
+}
+
+li {
+  /* 显式地恢复项目符号 */
+  list-style-type: revert; /* 兼容性更好的写法，但可能需要备用 */
+
+  /* 推荐：直接设置列表类型 */
+  /* 对于无序列表 (<ul>) 恢复为圆点 */
+  list-style-type: disc;
+
+  /* 对于有序列表 (<ol>) 恢复为数字 */
+  /* 更好的做法是，只对 ul 和 ol 分别设置：*/
+}

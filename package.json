@@ -28,6 +28,7 @@
     "@trpc/client": "^11.0.0",
     "@trpc/react-query": "^11.0.0",
     "@trpc/server": "^11.0.0",
+    "axios": "^1.13.2",
     "dompurify": "^3.3.0",
     "marked": "^16.4.1",
     "next": "^15.2.3",

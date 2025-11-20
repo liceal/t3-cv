@@ -24,6 +24,7 @@ export default function RootLayout({
 			<link
 				rel="stylesheet"
 				href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css"
+				precedence="default"
 			/>
 			<body>
 				<TRPCReactProvider>{children}</TRPCReactProvider>

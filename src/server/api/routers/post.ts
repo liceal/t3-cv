@@ -3,6 +3,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import puppeteer, { type LaunchOptions } from "puppeteer";
 import chromium from "@sparticuz/chromium";
+import path from "node:path";
+import * as fs from "node:fs";
 
 export const postRouter = createTRPCRouter({
 	hello: publicProcedure
@@ -49,11 +51,13 @@ export const postRouter = createTRPCRouter({
 					// "--max-old-space-size=512", // Node.js内存限制(MB)
 				], // Docker/Server需添加
 			};
-			if (process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD) {
-				puppeteerConfig.executablePath =
-					process.env.CHROME_PATH || (await chromium.executablePath());
-			} else {
-				puppeteerConfig.headless = true;
+			if (process.env.NODE_ENV === "production") {
+				if (process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD) {
+					puppeteerConfig.executablePath =
+						process.env.CHROME_PATH || (await chromium.executablePath());
+				} else {
+					puppeteerConfig.headless = true;
+				}
 			}
 			const browser = await puppeteer.launch(puppeteerConfig);
 			const page = await browser.newPage();
@@ -84,21 +88,21 @@ export const postRouter = createTRPCRouter({
 						</body>
 					</html>
 				`,
-				{
-					waitUntil: "networkidle0", // 等待所有网络请求完成（包括字体加载）
-					timeout: 30000, // 增加超时时间到30秒
-				},
+				// {
+				// waitUntil: "networkidle0", // 等待所有网络请求完成（包括字体加载）
+				// timeout: 30000, // 增加超时时间到30秒
+				// },
 			);
 
 			// 额外等待字体加载（如果网络较慢）
-			await page.evaluate(async () => {
-				const font = new FontFace(
-					"Maple Mono CN SemiBold",
-					'url("https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css")',
-				);
-				await font.load();
-				document.fonts.add(font);
-			});
+			// await page.evaluate(async () => {
+			// 	const font = new FontFace(
+			// 		"Maple Mono CN SemiBold",
+			// 		'url("https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-SemiBold/result.css")',
+			// 	);
+			// 	await font.load();
+			// 	document.fonts.add(font);
+			// });
 
 			// 确保所有内容已渲染
 			await page.waitForFunction(() => {
@@ -113,6 +117,18 @@ export const postRouter = createTRPCRouter({
 				printBackground: true, // 打印背景
 				margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
 			});
+
+			// 存放到本地/public下 位置 ./cv.pdf
+			if (process.env.NODE_ENV === "development") {
+				// 构建项目根目录下的 cv.pdf 路径
+				// process.cwd() 返回 Node.js 进程的当前工作目录 (通常是项目根目录)
+				const filePath = path.join(process.cwd(), "public/cv.pdf");
+
+				// 将 Buffer 写入文件。如果文件存在，则替换它。
+				fs.writeFile(filePath, pdf, () => {
+					console.log(`[PDF] 已成功写入本地文件 (开发环境): ${filePath}`);
+				});
+			}
 
 			await browser.close();
 			return { pdf };
